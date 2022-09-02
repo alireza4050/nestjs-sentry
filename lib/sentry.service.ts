@@ -7,11 +7,11 @@ import { SentryModuleOptions } from './sentry.interfaces';
 
 @Injectable()
 export class SentryService extends ConsoleLogger implements OnApplicationShutdown {
-  app = '@greguintow/nestjs-sentry: ';
   private static serviceInstance: SentryService;
   constructor(
     @Inject(SENTRY_MODULE_OPTIONS)
     readonly opts?: SentryModuleOptions,
+    private app = '',
   ) {
     super();
     if (!(opts && opts.dsn)) {
@@ -50,7 +50,7 @@ export class SentryService extends ConsoleLogger implements OnApplicationShutdow
   }
 
   log(message: string, context?: string, asBreadcrumb?: boolean) {
-    message = `${this.app} ${message}`;
+    if (this.app) message = `${this.app} ${message}`;
     try {
       super.log(message, context);
       asBreadcrumb
@@ -66,7 +66,7 @@ export class SentryService extends ConsoleLogger implements OnApplicationShutdow
   }
 
   error(message: string, trace?: string, context?: string) {
-    message = `${this.app} ${message}`;
+    if (this.app) message = `${this.app} ${message}`;
     try {
       super.error(message, trace, context);
       Sentry.captureMessage(message, Sentry.Severity.Error);
@@ -74,7 +74,7 @@ export class SentryService extends ConsoleLogger implements OnApplicationShutdow
   }
 
   warn(message: string, context?: string, asBreadcrumb?: boolean) {
-    message = `${this.app} ${message}`;
+    if (this.app) message = `${this.app} ${message}`;
     try {
       super.warn(message, context);
       asBreadcrumb
@@ -90,7 +90,7 @@ export class SentryService extends ConsoleLogger implements OnApplicationShutdow
   }
 
   debug(message: string, context?: string, asBreadcrumb?: boolean) {
-    message = `${this.app} ${message}`;
+    if (this.app) message = `${this.app} ${message}`;
     try {
       super.debug(message, context);
       asBreadcrumb
@@ -106,7 +106,7 @@ export class SentryService extends ConsoleLogger implements OnApplicationShutdow
   }
 
   verbose(message: string, context?: string, asBreadcrumb?: boolean) {
-    message = `${this.app} ${message}`;
+    if (this.app) message = `${this.app} ${message}`;
     try {
       super.verbose(message, context);
       asBreadcrumb
